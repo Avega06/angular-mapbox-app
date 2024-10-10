@@ -1,0 +1,55 @@
+<div #mapsRef id="map" class="map-container"></div>
+
+@if (isMarkerDirectiveActive()) {
+<ul class="list-group">
+  @for (marker of markers(); track $index) {
+  <li
+    [ngStyle]="{ 'background-color': marker.color }"
+    (dblclick)="markerDirective?.deleteMarker(marker.marker)"
+    (click)="markerDirective?.flyTo(marker.marker)"
+    class="list-group-item"
+  >
+    Marker{{ $index + 1 }}
+  </li>
+  }
+</ul>
+} @if (isZoomRangeDirectiveActive()) {
+<div class="floating-range p-2">
+  <div class="floating-content">
+    <button class="btn btn-primary" (click)="zoomRangeDirective?.zoomOut()">
+      -
+    </button>
+    <input
+      type="range"
+      class="form-range px-2"
+      min="-2"
+      max="18"
+      [value]="zoomRangeDirective!.zoom()"
+      (input)="zoomRangeDirective!.zoomChanged(zoomInput.value)"
+      #zoomInput
+    />
+
+    <button class="btn btn-primary" (click)="zoomRangeDirective!.zoomIn()">
+      +
+    </button>
+  </div>
+  <span class="form-label">
+    Zoom: {{ zoomRangeDirective!.zoom() | number : "2.2-2" }}
+    <br />
+    Lng, Lat: {{ zoomRangeDirective?.currentLngLat() }}
+  </span>
+</div>
+
+}
+
+<button class="btn btn-success sat-button" (click)="onChangeMap('sat')">
+  <fa-icon [icon]="mapIcons()['satelite']"></fa-icon>
+  <br />
+  Satelite
+</button>
+
+<button class="btn btn-warning street-button" (click)="onChangeMap()">
+  <fa-icon [icon]="mapIcons()['road']"></fa-icon>
+  <br />
+  Street
+</button>
