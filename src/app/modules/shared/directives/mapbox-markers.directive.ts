@@ -6,6 +6,7 @@ import {
   PLATFORM_ID,
   signal,
   effect,
+  OnDestroy,
 } from '@angular/core';
 import { LngLat, Map, Marker } from 'mapbox-gl';
 
@@ -33,7 +34,7 @@ export class MapboxMarkersDirective {
     if (isPlatformBrowser(this.platformId)) {
       if (this.mapInstance()) {
         this.mapInstance()!.on('load', () => {
-          this.readFromLocalStorage();
+          this.loadMarkers();
         });
 
         this.mapInstance()!.on('click', (e) => {
@@ -42,6 +43,16 @@ export class MapboxMarkersDirective {
       }
     }
   });
+
+  loadMarkers(): void {
+    this.clearMarkers();
+    this.readFromLocalStorage();
+  }
+
+  clearMarkers(): void {
+    this.markers().forEach(({ marker }) => marker.remove());
+    this.markers.set([]);
+  }
 
   createMarker(): void {
     if (!this.mapInstance()) return;

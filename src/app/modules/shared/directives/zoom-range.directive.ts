@@ -12,11 +12,15 @@ export class ZoomRangeDirective {
   public zoom = signal<number>(10);
   public currentLngLat = signal<LngLat | null>(null);
 
-  public zoomRangeEffect = effect(() => {
-    if (this.mapInstance()) {
-      this.mapListeners();
-    }
-  });
+  public zoomRangeEffect = effect(
+    () => {
+      if (this.mapInstance()) {
+        this.mapListeners();
+        this.currentLngLat.set(this.mapInstance()!.getCenter());
+      }
+    },
+    { allowSignalWrites: true }
+  );
 
   mapListeners() {
     if (!this.mapInstance()) throw 'Map not initialized';

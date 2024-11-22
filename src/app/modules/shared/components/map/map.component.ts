@@ -1,5 +1,7 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -7,36 +9,34 @@ import {
   ElementRef,
   inject,
   OnDestroy,
-  OnInit,
   output,
-  PLATFORM_ID,
   signal,
   viewChild,
 } from '@angular/core';
 import { LngLat, LngLatLike, Map } from 'mapbox-gl';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faRoad, faSatellite } from '@fortawesome/free-solid-svg-icons';
-import { environment } from '@env/environment.development';
-import { StyleOptions } from '../../interfaces';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+
 import {
   MapboxMarkersDirective,
   MarkerAndColor,
 } from '../../directives/mapbox-markers.directive';
 import { ZoomRangeDirective } from '../../directives/zoom-range.directive';
 import { MapboxService } from '../../services/mapbox.service';
+import { SelectMapBarComponent } from '../selectMapBar/selectMapBar.component';
+import { After } from 'v8';
 
 @Component({
   selector: 'shared-map',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule],
+  imports: [CommonModule, SelectMapBarComponent],
   templateUrl: './map.component.html',
   styleUrl: './map.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MapComponent implements OnDestroy {
+export class MapComponent implements AfterViewInit, OnDestroy {
+  public mapsInstance = output<Map>();
   public mapRef = viewChild<ElementRef>('mapsRef');
   public mapboxService = inject(MapboxService);
+
   public markerDirective = inject(MapboxMarkersDirective, {
     host: true,
     optional: true,
@@ -47,8 +47,10 @@ export class MapComponent implements OnDestroy {
     optional: true,
   });
 
-  public mapsInstance = output<Map>();
   public map = signal<Map | null>(null);
+  public isMapsSelected = signal(false);
+
+  public userPosition = toSignal(this.mapboxService.getCurrentPosition());
 
   public markers = computed<MarkerAndColor[] | null>(() => {
     return this.markerDirective!.markers();
@@ -66,25 +68,45 @@ export class MapComponent implements OnDestroy {
     this.mapboxService.currentLat()
   );
 
-  public mapIcons = computed<Record<string, IconDefinition>>(() => ({
-    road: faRoad,
-    satelite: faSatellite,
-  }));
+  constructor() {
+    effect(
+      () => {
+        this.mapboxService.initializeMap(this.mapRef(), this.getPosition());
+        this.map.set(this.mapboxService.map());
+        this.mapsInstance.emit(this.map()!);
+      },
+      { allowSignalWrites: true }
+    );
+  }
+  ngAfterViewInit(): void {
+    if (this.mapRef()) {
+    }
+  }
 
-  public mapEffect = effect(
-    () => {
-      this.mapboxService.initializeMap(this.mapRef());
-      this.map.set(this.mapboxService.map());
-      this.mapsInstance.emit(this.map()!);
-    },
-    { allowSignalWrites: true }
-  );
+  getPosition(): LngLatLike {
+    const position = this.userPosition();
+    if (!position) return this.currentLat();
+
+    return new LngLat(position.coords.longitude, position.coords.latitude);
+  }
+
+  flyToPosition() {
+    this.mapboxService.handleClickCurrentPosition();
+  }
 
   ngOnDestroy(): void {
-    this.map()?.remove;
+    this.map()?.remove();
   }
 
   public onChangeMap(type?: string) {
     this.mapboxService.onChangeMap(type);
+  }
+
+  public toggleSelectMapMenu() {
+    this.isMapsSelected.set(!this.isMapsSelected());
+  }
+
+  public getIconClass() {
+    return this.isMapsSelected() ? 'fa-xmark' : 'fa-bars';
   }
 }

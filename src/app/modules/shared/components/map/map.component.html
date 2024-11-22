@@ -16,33 +16,59 @@
 } @if (isZoomRangeDirectiveActive()) {
 <div class="floating-range p-2">
   <div class="floating-content">
-    <button class="btn btn-primary" (click)="zoomRangeDirective?.zoomOut()">
-      -
-    </button>
     <input
       type="range"
-      class="form-range px-2"
+      class="form-range custom-range px-2"
       min="-2"
       max="18"
       [value]="zoomRangeDirective!.zoom()"
       (input)="zoomRangeDirective!.zoomChanged(zoomInput.value)"
       #zoomInput
     />
-
-    <button class="btn btn-primary" (click)="zoomRangeDirective!.zoomIn()">
-      +
-    </button>
   </div>
   <span class="form-label">
     Zoom: {{ zoomRangeDirective!.zoom() | number : "2.2-2" }}
     <br />
-    Lng, Lat: {{ zoomRangeDirective?.currentLngLat() }}
+    Lng, Lat: {{ zoomRangeDirective?.currentLngLat()?.lng }}
+    {{ zoomRangeDirective?.currentLngLat()?.lat }}
   </span>
-</div>
 
+  <div class="btn-content">
+    <button
+      class="btn-zoom btn btn-danger"
+      (click)="zoomRangeDirective?.zoomOut()"
+    >
+      <i class="fa-solid fa-magnifying-glass-minus"></i>
+    </button>
+    <button
+      class="btn-zoom btn btn-primary"
+      (click)="zoomRangeDirective!.zoomIn()"
+    >
+      <i class="fa-solid fa-magnifying-glass-plus"></i>
+    </button>
+  </div>
+</div>
 }
 
-<button class="btn btn-success sat-button" (click)="onChangeMap('sat')">
+<select-map-bar
+  class="select-map animate__bounce"
+  (changeMap)="onChangeMap($event)"
+  [ngClass]="isMapsSelected() ? 'slide-in-up' : 'slide-in-down'"
+/>
+
+<button
+  class="btn select-button"
+  [ngClass]="isMapsSelected() ? 'btn-danger' : 'btn-primary'"
+  (click)="toggleSelectMapMenu()"
+>
+  <img [srcset]="!isMapsSelected() ? 'layers.svg' : 'close.svg'" />
+  <!-- <i [ngClass]="['fa-solid', getIconClass()]" class="fa-solid"></i> -->
+</button>
+<button (click)="flyToPosition()" class="btn btn-success btn-position">
+  <img src="position.svg" />
+</button>
+
+<!-- <button class="btn btn-success sat-button" (click)="onChangeMap('sat')">
   <fa-icon [icon]="mapIcons()['satelite']"></fa-icon>
   <br />
   Satelite
@@ -52,4 +78,4 @@
   <fa-icon [icon]="mapIcons()['road']"></fa-icon>
   <br />
   Street
-</button>
+</button> -->

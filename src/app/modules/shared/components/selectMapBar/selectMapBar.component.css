@@ -1,0 +1,35 @@
+:host {
+  display: block;
+}
+
+li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10%;
+  /* align-items: center; */
+}
+
+.list-group-item.active {
+  background-color: #32CD32; /* Verde lima */
+  color: #ffffff; /* Texto blanco */
+  border-color: #32CD32; /* Borde verde lima */
+}
+
+.menu-map {
+  overflow-y: scroll;
+  height: 120px
+}
+
+@media (max-width: 412px) {
+  .menu-map {
+    height: 110px !important;
+    width: auto;
+  }
+}
+
+@media (min-width: 768px) {
+.menu-map::-webkit-scrollbar {
+  display: none; 
+}
+}

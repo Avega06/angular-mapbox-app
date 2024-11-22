@@ -17,14 +17,10 @@ import { MapboxMarkersDirective } from 'src/app/modules/shared/directives/mapbox
   styleUrl: './markers.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class MarkersComponent implements OnDestroy {
+export default class MarkersComponent {
   public maps = signal<Map | null>(null);
 
   onMapInstance(map: Map) {
     this.maps.set(map);
-  }
-
-  ngOnDestroy(): void {
-    this.maps()?.remove();
   }
 }

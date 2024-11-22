@@ -23,13 +23,10 @@ import { MapboxMarkersDirective } from 'src/app/modules/shared/directives/mapbox
   styleUrl: './zoom-range.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class ZoomRangeComponent implements OnDestroy {
+export default class ZoomRangeComponent {
   public maps = signal<Map | null>(null);
 
   onMapInstance(map: Map) {
     this.maps.set(map);
-  }
-  ngOnDestroy(): void {
-    this.maps()?.remove();
   }
 }

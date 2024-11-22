@@ -1,0 +1,14 @@
+<div class="menu-map">
+  <ul class="list-group animate__slideInUp">
+    @for (maps of mapTypes(); track maps.value) {
+    <li
+      class="list-group-item"
+      (click)="onChangeMap(maps.value)"
+      [class.active]="selectedMap() === maps.value"
+    >
+      <i [class]="maps.icon"></i>
+      <span>{{ maps.value }}</span>
+    </li>
+    }
+  </ul>
+</div>

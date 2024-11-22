@@ -14,25 +14,48 @@
   height: 100vh; 
 }
 
-.sat-button {
+.select-button {
   position: fixed;
-  bottom: 70px;
-  right: 20px;
-}
-
-.street-button {
-  position: fixed;
-  bottom: 150px;
-  right: 20px;
-}
-
-button {
-  //position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 80px;
+  right: 10px;
   width: 10%;
 }
 
+.btn-position{
+  position: fixed;
+  bottom: 20px;
+  right: 10px;
+  width: 10%;
+}
+
+button {
+  bottom: 20px;
+  right: 20px;
+  width: 20%
+}
+
+.select-map{
+  position: fixed;
+  bottom: 150px;
+  right: 10px;
+  width: 10%;
+  z-index: 9999;
+}
+
+.slide-in-up {
+  animation: scale-in-ver-bottom 0.5s ease forwards;
+
+}
+
+.slide-in-down {
+  animation: scale-out-ver-bottom 0.5s ease forwards;
+}
+
+.btn-content {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
 
 .floating-range {
   position: fixed;
@@ -48,4 +71,61 @@ button {
 .floating-content {
   display: flex;
   align-items: center;
+}
+
+.custom-marker {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-color: #007AFF;
+  z-index: 1;
+}
+
+@media (max-width: 425px){
+  .floating-range {
+    width: 250px !important;
+  }
+
+  .btn-zoom {
+    width: 40% !important;
+  }
+
+  .select-button {
+    bottom: 26px !important;
+    width: 70px
+    height: 10px
+  }
+
+  .select-map {
+    bottom: 85px !important;
+    width: 70px
+  }
+}
+
+/* Estilo inicial del rango */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #ccc; /* Color por defecto */
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Para Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #ccc; /* Color por defecto */
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
